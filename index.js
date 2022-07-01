@@ -1,4 +1,5 @@
 const express = require('express')
+const { readFile } = require('fs')
 const morgan = require('morgan')
 
 const app = express()
@@ -9,6 +10,7 @@ morgan.token("newperson", (request, response) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :newperson'))
 app.use(express.json())
+app.use(express.static('build'))
 
 let persons = [
   {
@@ -33,13 +35,15 @@ let persons = [
   }
 ]
 
-
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(person => person.id === id)
   if (person) { response.json(person) } else { response.status(404).end() }
 })
 
+app.get('/', (request, response) => {
+  response.send(readFile('build/index.html'))
+})
 
 app.get('/info', (request, response) => {
   response.send(`
