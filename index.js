@@ -1,5 +1,5 @@
 const express = require('express')
-const { readFile } = require('fs')
+const { readFile, readFileSync } = require('fs')
 const morgan = require('morgan')
 
 const app = express()
@@ -42,7 +42,7 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.get('/', (request, response) => {
-  response.send(readFile('build/index.html'))
+  response.send(readFileSync('build/index.html'))
 })
 
 app.get('/info', (request, response) => {
