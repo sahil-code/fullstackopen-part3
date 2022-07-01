@@ -42,7 +42,7 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.get('/', (request, response) => {
-  response.send(readFileSync('build/index.html'))
+  response.send(readFileSync('/build/index.html'))
 })
 
 app.get('/info', (request, response) => {
