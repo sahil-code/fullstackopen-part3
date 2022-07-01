@@ -42,7 +42,8 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.get('/', (request, response) => {
-  response.send(readFile('./build/index.html', (err, data) => {
+  const filelink = path.join(__dirname, 'build', 'index.html')
+  response.send(readFile(filelink, (err, data) => {
     if(err) console.log('error', err);
   }))
 })
