@@ -42,7 +42,7 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.get('/', (request, response) => {
-  response.send(readFile('build/index.html', (err, data) => {
+  response.send(readFile('./build/index.html', (err, data) => {
     if(err) console.log('error', err);
   }))
 })
