@@ -4,7 +4,10 @@ const morgan = require('morgan')
 var path = require('path')
 
 require('dotenv').config()
+
 const Person = require('./models/person')
+const Middleware = require('./utils/middleware')
+const logger = require('./utils/logger')
 
 const app = express()
 
@@ -26,7 +29,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.get('/', (request, response) => {
   const filelink = path.join(__dirname, 'build', 'index.html')
   response.send(readFile(filelink, (err) => {
-    if (err) console.log('error', err)
+    if (err) logger.error(err)
   }))
 })
 
@@ -54,7 +57,6 @@ app.post('/api/persons', (request, response, next) => {
     response.json(savedPerson)
   })
     .catch(error => next(error))
-
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -79,27 +81,10 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-morgan.token('param', function (req) {
-  console.log(req.param)
-})
+morgan.token('param', function (req) { console.log(req.param) })
 
-const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: 'unknown endpoint' })
-}
-
-app.use(unknownEndpoint)
-
-const errorHandler = (error, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') { return response.status(400).send({ error: 'malformatted id' }) }
-  else if (error.name === 'ValidationError') { return response.status(400).json({ error: error.message }) }
-
-  next(error)
-}
-
-// this has to be the last loaded middleware.
-app.use(errorHandler)
+app.use(Middleware.unknownEndpoint)
+app.use(Middleware.errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
